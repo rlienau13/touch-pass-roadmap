@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Touch Pass — Summer 2026 Roadmap</title>
+<script>
+// View-only mode: open this page with ?view=1 in the URL to hide all editing
+// controls. The bare URL (no query string) always opens in full-edit mode.
+(function(){
+  var params = new URLSearchParams(location.search);
+  if(params.get("view")==="1"){ document.documentElement.classList.add("view-only"); }
+})();
+</script>
+<style>
+  :root{
+    --ink:#1c1c1c;
+    --muted:#6b6b6b;
+    --line:#e4e4e4;
+    --paper:#fbfbfa;
+    --card:#ffffff;
+    --pp:#64748b;
+    --mi:#d97a1f;
+    --ml:#5a9b2f;
+    --mat:#1f9e8a;
+    --des:#b5556f;
+    --mk:#6452c9;
+    --lp:#2563b0;
+    --lc:#1d4e6b;
+    --gold:#b8860b;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;}
+
+  .container{max-width:1320px; margin:0 auto; padding:38px 32px 70px;}
+
+  h2{font-size:19px; font-weight:800; margin:46px 0 12px; padding-bottom:8px; border-bottom:2px solid var(--ink);}
+  .container > h2:first-child{margin-top:0;}
+  h3{font-size:14.5px; font-weight:800; margin:0 0 4px; display:flex; align-items:center; gap:8px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block; flex-shrink:0;}
+  .cat-section{margin-bottom:28px;}
+
+  p{line-height:1.6; font-size:14px;}
+
+  table{width:100%; border-collapse:collapse; font-size:12.5px; background:#fff; table-layout:fixed;}
+  th{text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); border-bottom:2px solid var(--ink); padding:6px 8px;}
+  td{padding:8px 8px; border-bottom:1px solid var(--line); vertical-align:top; overflow-wrap:break-word;}
+  th:nth-child(1), td:nth-child(1){width:15%;}
+  th:nth-child(2), td:nth-child(2){width:32%;}
+  th:nth-child(3), td:nth-child(3){width:15%;}
+  th:nth-child(4), td:nth-child(4){width:12%;}
+  th:nth-child(5), td:nth-child(5){width:15%;}
+  th:nth-child(6), td:nth-child(6){width:11%;}
+  td.task-name{font-weight:700;}
+  td.due{white-space:nowrap; color:#222;}
+  td.cats{color:var(--muted); font-size:11.8px;}
+  td.deps{color:var(--muted); font-size:11.8px;}
+  td.actions{white-space:nowrap; text-align:right;}
+
+  .icon-btn{border:none; background:none; cursor:pointer; font-size:14px; padding:2px 5px; border-radius:4px; color:var(--muted); line-height:1;}
+  .icon-btn:hover{background:var(--line); color:var(--ink);}
+
+  .add-row{margin-top:10px;}
+
+  .btn{font-family:inherit; font-size:12.5px; font-weight:700; padding:8px 14px; border-radius:6px; border:1px solid var(--ink); background:#fff; color:var(--ink); cursor:pointer;}
+  .btn:hover{background:var(--ink); color:#fff;}
+  .btn.subtle{font-size:12px; padding:6px 12px; border-color:var(--line); color:var(--muted); font-weight:600;}
+  .btn.subtle:hover{background:var(--line); color:var(--ink); border-color:var(--line);}
+  .btn.danger-ish:hover{background:#b5556f; border-color:#b5556f;}
+
+  .toolbar{display:flex; align-items:center; justify-content:flex-end; gap:10px; margin-bottom:6px;}
+  .save-status{font-size:11px; color:var(--muted); margin-right:auto;}
+
+  .gantt-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:8px; padding:14px 16px 12px; background:#fff;}
+  .gantt{position:relative; display:grid; grid-template-columns:185px repeat(11,minmax(80px,1fr)); grid-template-rows:24px 22px 40px 20px 40px 40px 40px 40px 40px 20px 40px 40px 40px; column-gap:3px; row-gap:3px; min-width:1120px;}
+  .month-band{display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10.5px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;border-bottom:2px solid var(--ink);}
+  .week-hdr{font-size:10.5px;color:var(--muted);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--line);}
+  .row-label{display:flex;align-items:center;font-weight:700;font-size:11.8px;padding-left:8px;border-left:4px solid;border-radius:2px;background:#fafafa;}
+  .divider{position:relative;display:flex;align-items:center;font-weight:700;font-size:10.5px;letter-spacing:.1em;color:#fff;background:var(--ink);padding-left:8px;text-transform:uppercase;border-radius:3px;}
+  .gantt-row-track{position:relative; height:100%;}
+  .gantt-gridlines{position:relative;}
+  .gantt-gridline{position:absolute; top:0; bottom:0; width:1px; background:var(--line); pointer-events:none;}
+  .chip{position:absolute; box-sizing:border-box; border-radius:5px;color:#fff;font-size:10.8px;font-weight:600;display:flex;align-items:center;padding:0 7px;height:26px;cursor:pointer;transition:filter .15s, box-shadow .15s;}
+  .chip:hover{filter:brightness(1.12);box-shadow:0 0 0 2px rgba(0,0,0,.18);}
+  .chip .chip-text{display:block;min-width:0;flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .milestone-star{position:absolute; box-sizing:border-box; display:flex; align-items:center; justify-content:center; color:var(--gold); font-size:19px; line-height:1; cursor:pointer; transition:transform .15s;}
+  .milestone-star:hover{transform:scale(1.22);}
+  @keyframes rowFlash{ 0%{background:#fff6cc;} 100%{background:transparent;} }
+  tr.flash-highlight{animation:rowFlash 1.6s ease-out;}
+
+  .legend{display:flex; gap:16px; flex-wrap:wrap; margin-top:14px; font-size:11.5px; color:var(--muted);}
+  .legend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+
+  footer{margin-top:50px; padding-top:16px; border-top:1px solid var(--line); font-size:11.5px; color:var(--muted); font-style:italic;}
+
+  .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:50; padding:20px;}
+  .modal-overlay.open{display:flex;}
+  .modal{background:#fff; border-radius:10px; width:100%; max-width:560px; max-height:88vh; overflow-y:auto; padding:24px 26px; box-shadow:0 12px 40px rgba(0,0,0,.25);}
+  .modal h3{margin:0 0 16px; font-size:16px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); margin-bottom:5px;}
+  .field input[type=text], .field input[type=date], .field textarea{width:100%; font-family:inherit; font-size:13px; padding:8px 10px; border:1px solid var(--line); border-radius:6px; color:var(--ink);}
+  .field textarea{resize:vertical; min-height:64px;}
+  .field.checkbox{display:flex; align-items:center; gap:8px;}
+  .field.checkbox label{margin:0; text-transform:none; font-size:13px; font-weight:600; color:var(--ink);}
+  .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:18px;}
+  .hint{font-size:11px; color:var(--muted); margin-top:-2px; margin-bottom:14px;}
+
+  .tag-picker{display:flex; flex-wrap:wrap; gap:6px;}
+  .tag-pill{font-family:inherit; font-size:11.5px; font-weight:600; padding:5px 11px 5px 8px; border-radius:999px; border:1.5px solid var(--line); background:#fff; color:var(--ink); cursor:pointer; display:inline-flex; align-items:center; gap:6px; line-height:1.2;}
+  .tag-pill:hover{border-color:var(--ink);}
+  .tag-pill .pill-dot{width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0;}
+  .tag-pill.selected{background:var(--ink); color:#fff; border-color:var(--ink);}
+  .tag-pill.selected .pill-dot{box-shadow:0 0 0 1.5px #fff;}
+
+  table.milestones-table th:nth-child(1), table.milestones-table td:nth-child(1){width:18%;}
+  table.milestones-table th:nth-child(2), table.milestones-table td:nth-child(2){width:42%;}
+  table.milestones-table th:nth-child(3), table.milestones-table td:nth-child(3){width:16%;}
+  table.milestones-table th:nth-child(4), table.milestones-table td:nth-child(4){width:14%;}
+  table.milestones-table th:nth-child(5), table.milestones-table td:nth-child(5){width:10%;}
+
+  /* View-only mode (?view=1): hide editing affordances entirely */
+  .view-only .toolbar{display:none;}
+  .view-only .add-row{display:none;}
+  .view-only .icon-btn{display:none;}
+  .view-only td.actions, .view-only th:last-child{visibility:hidden;}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="toolbar">
+    <span class="save-status" id="savedStamp"></span>
+    <button class="btn subtle" onclick="resetDefaults()">Reset to Original</button>
+    <button class="btn" onclick="exportHtml()">Export HTML</button>
+  </div>
+
+  <h2 style="margin-top:0;">High-Level Timeline</h2>
+
+  <div class="gantt-wrap">
+    <div class="gantt" id="ganttGrid">
+      <!-- Vertical week-separator lines, behind all rows -->
+      <div class="gantt-gridlines" style="grid-row:2/14;grid-column:2/13;">
+        <div class="gantt-gridline" style="left:9.0909%;"></div>
+        <div class="gantt-gridline" style="left:18.1818%;"></div>
+        <div class="gantt-gridline" style="left:27.2727%;"></div>
+        <div class="gantt-gridline" style="left:36.3636%;"></div>
+        <div class="gantt-gridline" style="left:45.4545%;"></div>
+        <div class="gantt-gridline" style="left:54.5455%;"></div>
+        <div class="gantt-gridline" style="left:63.6364%;"></div>
+        <div class="gantt-gridline" style="left:72.7273%;"></div>
+        <div class="gantt-gridline" style="left:81.8182%;"></div>
+        <div class="gantt-gridline" style="left:90.9091%;"></div>
+      </div>
+
+      <!-- Row 1: month bands -->
+      <div style="grid-row:1;grid-column:1/2;"></div>
+      <div class="month-band" style="grid-row:1;grid-column:2/4;">June</div>
+      <div class="month-band" style="grid-row:1;grid-column:4/9;">July</div>
+      <div class="month-band" style="grid-row:1;grid-column:9/13;">August</div>
+
+      <!-- Row 2: week headers -->
+      <div style="grid-row:2;grid-column:1/2;font-size:10.5px;color:var(--muted);display:flex;align-items:center;padding-left:8px;text-transform:uppercase;letter-spacing:.05em;">Workstream</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:2/3;">Jun 18</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:3/4;">Jun 22</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:4/5;">Jun 29</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:5/6;">Jul 6</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:6/7;">Jul 13</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:7/8;">Jul 20</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:8/9;">Jul 27</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:9/10;">Aug 3</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:10/11;">Aug 10</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:11/12;">Aug 17</div>
+      <div class="week-hdr" style="grid-row:2;grid-column:12/13;">Aug 24</div>
+
+      <!-- Row 3: Project Planning -->
+      <div class="row-label" style="grid-row:3;border-color:var(--pp);">Project Planning</div>
+
+      <!-- Row 4: divider -->
+      <div class="divider" style="grid-row:4;grid-column:1/13;">Manufacturing</div>
+
+      <!-- Row 5: Mfg — Immediate -->
+      <div class="row-label" style="grid-row:5;border-color:var(--mi);">Mfg — Immediate (D2)</div>
+
+      <!-- Row 6: Mfg — Long Term -->
+      <div class="row-label" style="grid-row:6;border-color:var(--ml);">Mfg — Long Term (D1)</div>
+
+      <!-- Row 7: Materials -->
+      <div class="row-label" style="grid-row:7;border-color:var(--mat);">Materials</div>
+
+      <!-- Row 8: Design -->
+      <div class="row-label" style="grid-row:8;border-color:var(--des);">Design</div>
+
+      <!-- Row 9: Marketing -->
+      <div class="row-label" style="grid-row:9;border-color:var(--mk);">Marketing</div>
+
+      <!-- Row 10: divider -->
+      <div class="divider" style="grid-row:10;grid-column:1/13;">Logistics</div>
+
+      <!-- Row 11: Shipping/Packaging -->
+      <div class="row-label" style="grid-row:11;border-color:var(--lp);">Logistics — Shipping/Packaging</div>
+
+      <!-- Row 12: Storage/Carry -->
+      <div class="row-label" style="grid-row:12;border-color:var(--lc);">Logistics — Storage/Carry</div>
+
+      <!-- Row 13: Key Milestones -->
+      <div class="row-label" style="grid-row:13;border-color:var(--gold);">Key Milestones</div>
+    </div>
+
+    <div class="legend">
+      <span><span class="sw" style="background:var(--pp)"></span>Project Planning</span>
+      <span><span class="sw" style="background:var(--mi)"></span>Mfg — Immediate (D2)</span>
+      <span><span class="sw" style="background:var(--ml)"></span>Mfg — Long Term (D1)</span>
+      <span><span class="sw" style="background:var(--mat)"></span>Materials</span>
+      <span><span class="sw" style="background:var(--des)"></span>Design</span>
+      <span><span class="sw" style="background:var(--mk)"></span>Marketing</span>
+      <span><span class="sw" style="background:var(--lp)"></span>Shipping/Packaging</span>
+      <span><span class="sw" style="background:var(--lc)"></span>Storage/Carry</span>
+      <span style="color:var(--gold); font-weight:800;">★ Key Milestone</span>
+    </div>
+  </div>
+
+  <h2>Workstreams &amp; Tasks</h2>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--pp)"></span>Project Planning</h3>
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Categories</th><th>Due</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-pp"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openModal('pp')">+ Add Task</button></div>
+  </div>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--mi)"></span>Manufacturing — Immediate (Design 2)</h3>
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Categories</th><th>Due</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-mi"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openModal('mi')">+ Add Task</button></div>
+  </div>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--ml)"></span>Manufacturing — Long Term (Design 1)</h3>
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Categories</th><th>Due</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-ml"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openModal('ml')">+ Add Task</button></div>
+  </div>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--mat)"></span>Materials</h3>
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Categories</th><th>Due</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-mat"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openModal('mat')">+ Add Task</button></div>
+  </div>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--des)"></span>Design</h3>
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Categories</th><th>Due</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-des"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openModal('des')">+ Add Task</button></div>
+  </div>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--mk)"></span>Marketing</h3>
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Categories</th><th>Due</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-mk"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openModal('mk')">+ Add Task</button></div>
+  </div>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--lp)"></span>Logistics — Shipping/Packaging</h3>
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Categories</th><th>Due</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-lp"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openModal('lp')">+ Add Task</button></div>
+  </div>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--lc)"></span>Logistics — Storage / Carry</h3>
+    <table>
+      <thead><tr><th>Task</th><th>Description</th><th>Categories</th><th>Due</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-lc"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openModal('lc')">+ Add Task</button></div>
+  </div>
+
+  <h2>Key Milestones</h2>
+
+  <div class="cat-section">
+    <h3><span class="dot" style="background:var(--gold)"></span>Key Milestones</h3>
+    <table class="milestones-table">
+      <thead><tr><th>Milestone</th><th>Description</th><th>Due Date</th><th>Dependencies</th><th>Actions</th></tr></thead>
+      <tbody id="tbody-milestones"></tbody>
+    </table>
+    <div class="add-row"><button class="btn subtle" onclick="openMilestoneModal()">+ Add Milestone</button></div>
+  </div>
+
+  <footer>Prepared by Reese · Touch Pass · Dates are planning targets and will be refined as Design 1 prototyping and manufacturer conversations progress.</footer>
+
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this) closeModal()">
+  <div class="modal">
+    <h3 id="modalTitle">Edit Task</h3>
+    <form id="modalForm" onsubmit="saveModal(event)">
+      <div class="field">
+        <label for="f-name">Task Name</label>
+        <input type="text" id="f-name" required>
+      </div>
+      <div class="field">
+        <label for="f-desc">Description</label>
+        <textarea id="f-desc"></textarea>
+      </div>
+      <div class="field">
+        <label>Primary Category</label>
+        <div class="tag-picker" id="f-primaryCat"></div>
+        <div class="hint" style="margin-bottom:0;">Determines the task's timeline row and which workstream section it's listed under.</div>
+      </div>
+      <div class="field">
+        <label>Secondary Categories</label>
+        <div class="tag-picker" id="f-secondaryCats"></div>
+      </div>
+      <div class="field checkbox">
+        <input type="checkbox" id="f-recurring" onchange="toggleRecurringFields()">
+        <label for="f-recurring">Ongoing / recurring (no fixed due date)</label>
+      </div>
+      <div class="field" id="startField">
+        <label for="f-start">Start Date</label>
+        <input type="date" id="f-start">
+      </div>
+      <div class="hint" style="margin-top:-8px;">Optional — leave blank to auto-start right after the previous task in this workstream finishes.</div>
+      <div class="field" id="dueField">
+        <label for="f-due">Due Date</label>
+        <input type="date" id="f-due">
+      </div>
+      <div class="field" id="recurLabelField" style="display:none;">
+        <label for="f-recurLabel">Recurrence Label</label>
+        <input type="text" id="f-recurLabel" placeholder="e.g. Ongoing — weekly, Jun 22–Aug 31">
+      </div>
+      <div class="field">
+        <label for="f-deps">Dependencies</label>
+        <input type="text" id="f-deps" placeholder="Semicolon-separated task names, or None">
+      </div>
+      <div class="hint">This task's bar on the timeline spans from its start date (or right after the previous task, if left blank) to its due date.</div>
+      <div class="modal-actions">
+        <button type="button" class="btn subtle" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn">Save Task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="milestoneModalOverlay" onclick="if(event.target===this) closeMilestoneModal()">
+  <div class="modal">
+    <h3 id="milestoneModalTitle">Edit Milestone</h3>
+    <form id="milestoneModalForm" onsubmit="saveMilestoneModal(event)">
+      <div class="field">
+        <label for="fm-name">Milestone Name</label>
+        <input type="text" id="fm-name" required>
+      </div>
+      <div class="field">
+        <label for="fm-desc">Description</label>
+        <textarea id="fm-desc"></textarea>
+      </div>
+      <div class="field">
+        <label for="fm-due">Due Date</label>
+        <input type="date" id="fm-due" required>
+      </div>
+      <div class="field">
+        <label for="fm-deps">Dependencies</label>
+        <input type="text" id="fm-deps" placeholder="Semicolon-separated task names, or None">
+      </div>
+      <div class="hint">This milestone's star on the timeline above auto-updates from its due date.</div>
+      <div class="modal-actions">
+        <button type="button" class="btn subtle" onclick="closeMilestoneModal()">Cancel</button>
+        <button type="submit" class="btn">Save Milestone</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+const MONTHS=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+function fmtDate(iso){
+  if(!iso) return "";
+  const parts=iso.split("-").map(Number);
+  return MONTHS[parts[1]-1]+" "+parts[2]+", "+parts[0];
+}
+
+const WEEK_STARTS=["2026-06-18","2026-06-22","2026-06-29","2026-07-06","2026-07-13","2026-07-20","2026-07-27","2026-08-03","2026-08-10","2026-08-17","2026-08-24"];
+const PROJECT_START="2026-06-18";
+
+// Continuous (sub-week) position on the timeline: an integer part giving the
+// 0-based week column, plus a fractional part giving how far through that
+// specific column's actual day-span the date falls. Columns aren't all the
+// same length (the first one is a short partial week), so the fraction is
+// computed against each column's real length rather than assuming 7 days.
+function weekPos(iso){
+  const d=new Date(iso+"T00:00:00");
+  let idx=0;
+  for(let i=0;i<WEEK_STARTS.length;i++){
+    if(d>=new Date(WEEK_STARTS[i]+"T00:00:00")) idx=i;
+  }
+  const start=new Date(WEEK_STARTS[idx]+"T00:00:00");
+  const colLenDays=idx+1<WEEK_STARTS.length
+    ? (new Date(WEEK_STARTS[idx+1]+"T00:00:00")-start)/86400000
+    : 7;
+  const daysIn=(d-start)/86400000;
+  const frac=colLenDays>0 ? Math.min(1, Math.max(0, daysIn/colLenDays)) : 0;
+  return idx+frac;
+}
+
+// Minimum visual width for a chip/star, expressed as a percent of the full
+// 11-column timeline width, so very short or same-day items stay visible
+// and clickable instead of collapsing to nothing.
+const MIN_CHIP_WIDTH_PCT=2;
+
+const SECTION_META=[
+  {key:"pp",  name:"Project Planning", short:"Project Planning", color:"--pp", row:3},
+  {key:"mi",  name:"Manufacturing — Immediate (Design 2)", short:"Mfg — Immediate", color:"--mi", row:5},
+  {key:"ml",  name:"Manufacturing — Long Term (Design 1)", short:"Mfg — Long Term", color:"--ml", row:6},
+  {key:"mat", name:"Materials", short:"Materials", color:"--mat", row:7},
+  {key:"des", name:"Design", short:"Design", color:"--des", row:8},
+  {key:"mk",  name:"Marketing", short:"Marketing", color:"--mk", row:9},
+  {key:"lp",  name:"Logistics — Shipping/Packaging", short:"Logistics — Shipping/Packaging", color:"--lp", row:11},
+  {key:"lc",  name:"Logistics — Storage / Carry", short:"Logistics — Storage/Carry", color:"--lc", row:12}
+];
+const CAT_LABELS={}; SECTION_META.forEach(m=>{ CAT_LABELS[m.key]=m.short; });
+const LABEL_TO_KEY={}; SECTION_META.forEach(m=>{ LABEL_TO_KEY[m.short]=m.key; });
+
+const DEFAULT_DATA = /*DATA_START*/{"sections":[
+{"key":"pp","name":"Project Planning","tasks":[
+{"id":"t1","name":"Confirm Kickstarter Strategy & Funding Goal","desc":"Lock the Kickstarter funding goal, reward-tier approach, and campaign narrative that ties together the two-design strategy: Design 2 now, Design 1 as the long-term hero product.","cats":"Project Planning, Marketing","due":"2026-06-26","recurring":false,"recurLabel":"","deps":"None","milestone":false},
+{"id":"t2","name":"Weekly Check-Ins","desc":"Standing weekly check-ins with Jenna and the team. Thursdays at 12:00.","cats":"Project Planning","due":"","recurring":true,"recurLabel":"Ongoing — weekly, Jun 22–Aug 31","deps":"None","milestone":false},
+{"id":"t3","name":"Complete Market Validation Research","desc":"Gather competitive landscape, target-audience feedback, and pricing validation to confirm Touch Pass is ready for a public launch.","cats":"Project Planning, Marketing","due":"2026-07-24","recurring":false,"recurLabel":"","deps":"None","milestone":false},
+{"id":"t4","name":"Kickstarter Readiness Review (Go/No-Go)","desc":"Step back and confirm prototypes, content, logistics research, and validation are far enough along to launch with confidence by Aug 31.","cats":"Project Planning, Marketing, Manufacturing, Logistics","due":"2026-08-24","recurring":false,"recurLabel":"","deps":"Complete Market Validation Research; Seed Boards to Influencers & Run Demos; Build Kickstarter Campaign Page (Draft); Finalize Shipping Cost Estimates; Finalize Packaging Spec for Design 1 & Design 2; Finalize Storage/Carry Bag Selection","milestone":false}
+]},
+{"key":"mi","name":"Manufacturing — Immediate (Design 2)","tasks":[
+{"id":"t5","name":"Validate Design 2 Interim Manufacturing Feasibility","desc":"Confirm with candidate local manufacturers that Design 2's heat-formed panel construction is workable at a reasonable cost for an interim run of roughly 100–1,000 boards.","cats":"Mfg — Immediate, Materials","due":"2026-06-26","recurring":false,"recurLabel":"","deps":"None","milestone":false},
+{"id":"t6","name":"Finalize Interim Manufacturer for Design 2","desc":"Select and confirm terms (price, MOQ, lead time) with a local manufacturer for an interim Design 2 run of roughly 100–1,000 boards.","cats":"Mfg — Immediate","due":"2026-07-10","recurring":false,"recurLabel":"","deps":"Validate Design 2 Interim Manufacturing Feasibility; Build & Test One Design 2 Prototype","milestone":false},
+{"id":"t7","name":"Place Initial Design 2 Production Order","desc":"Submit the purchase order for the first batch of Design 2 boards — roughly 100–1,000 units — sized for influencer seeding and demo needs.","cats":"Mfg — Immediate","due":"2026-07-17","recurring":false,"recurLabel":"","deps":"Finalize Interim Manufacturer for Design 2","milestone":false},
+{"id":"t8","name":"Receive First Batch of Design 2 Boards","desc":"Take delivery and quality-check the first production run of Design 2 boards.","cats":"Mfg — Immediate, Logistics — Shipping/Packaging","due":"2026-08-07","recurring":false,"recurLabel":"","deps":"Place Initial Design 2 Production Order","milestone":false},
+{"id":"t9","name":"Seed Boards to Influencers & Run Demos","desc":"Distribute boards to selected influencers and run in-person demos to generate feedback and content.","cats":"Mfg — Immediate, Marketing","due":"2026-08-14","recurring":false,"recurLabel":"","deps":"Receive First Batch of Design 2 Boards","milestone":false}
+]},
+{"key":"ml","name":"Manufacturing — Long Term (Design 1)","tasks":[
+{"id":"t10","name":"Scope Injection-Mold Requirements & Long-Term Manufacturing Partners","desc":"Outline specs for the four required molds (C/D/E/F) and evaluate candidate injection-molding partners — including Marc's Mexico contact — for production after Kickstarter.","cats":"Mfg — Long Term, Materials","due":"2026-08-21","recurring":false,"recurLabel":"","deps":"Finalize Design 1 Collapsed Dimensions & Weight","milestone":false}
+]},
+{"key":"mat","name":"Materials","tasks":[
+{"id":"t11","name":"Validate Design 1 & Design 2 BOM Costs at Production Scale","desc":"Re-confirm per-unit material costs (PVC sheet, hardware, netting, hinges) at 100-unit scale against the brief's BOM estimates, using actual supplier quotes where possible.","cats":"Materials, Manufacturing","due":"2026-07-17","recurring":false,"recurLabel":"","deps":"Validate Design 2 Interim Manufacturing Feasibility; Build & Test Design 1 Prototype v1","milestone":false}
+]},
+{"key":"des","name":"Design","tasks":[
+{"id":"t12","name":"Build & Test Design 1 Prototype v1","desc":"Construct the first CNC-machined Design 1 prototype — modular frame plus bungee net — and confirm the fold/assembly mechanics work as designed.","cats":"Design, Materials","due":"2026-06-26","recurring":false,"recurLabel":"","deps":"None","milestone":false},
+{"id":"t13","name":"Build & Test One Design 2 Prototype","desc":"Personally build one Design 2 board to confirm the chosen materials and construction hold up before committing to a full production run.","cats":"Design, Materials","due":"2026-07-03","recurring":false,"recurLabel":"","deps":"None","milestone":false},
+{"id":"t14","name":"Test Design 1 Durability & Bungee Net Performance","desc":"Stress-test bungee net rebound performance, frame durability, and repeated assembly/disassembly to surface any weak points.","cats":"Design, Materials","due":"2026-07-10","recurring":false,"recurLabel":"","deps":"Build & Test Design 1 Prototype v1","milestone":false},
+{"id":"t15","name":"Refine Design 1 Prototype v2","desc":"Incorporate testing findings into a revised prototype, addressing any material, fastening, or net-tension issues.","cats":"Design, Materials","due":"2026-07-24","recurring":false,"recurLabel":"","deps":"Test Design 1 Durability & Bungee Net Performance","milestone":false},
+{"id":"t16","name":"Finalize Design 1 Collapsed Dimensions & Weight","desc":"Lock the final collapsed footprint, packed dimensions, and total system weight once the prototype stabilizes — this unblocks packaging, shipping, and storage-bag decisions.","cats":"Design, Logistics — Shipping/Packaging, Logistics — Storage/Carry","due":"2026-08-07","recurring":false,"recurLabel":"","deps":"Refine Design 1 Prototype v2","milestone":false},
+{"id":"t17","name":"Prep Design 1 Hero-Product Content for Kickstarter","desc":"Use the stabilized Design 1 prototype to film and photograph hero content that highlights the bungee-net rebound mechanic for the campaign page.","cats":"Design, Marketing","due":"2026-08-14","recurring":false,"recurLabel":"","deps":"Refine Design 1 Prototype v2","milestone":false}
+]},
+{"key":"mk","name":"Marketing","tasks":[
+{"id":"t18","name":"Build Kickstarter Campaign Content Plan","desc":"Outline the content needed for launch — hero footage, demo photos/video, reward tiers, copy — across both designs.","cats":"Marketing, Project Planning","due":"2026-07-03","recurring":false,"recurLabel":"","deps":"Confirm Kickstarter Strategy & Funding Goal","milestone":false},
+{"id":"t19","name":"Produce Design 2 Demo Content from Seeding & Feedback","desc":"Turn influencer seeding and demo footage into usable Kickstarter and social content, and collect testimonials.","cats":"Marketing, Mfg — Immediate","due":"2026-08-21","recurring":false,"recurLabel":"","deps":"Seed Boards to Influencers & Run Demos","milestone":false},
+{"id":"t20","name":"Build Kickstarter Campaign Page (Draft)","desc":"Assemble the full campaign page — story, hero content, reward tiers, FAQs — ready for final review.","cats":"Marketing, Design","due":"2026-08-21","recurring":false,"recurLabel":"","deps":"Build Kickstarter Campaign Content Plan; Prep Design 1 Hero-Product Content for Kickstarter; Produce Design 2 Demo Content from Seeding & Feedback","milestone":false},
+{"id":"t21","name":"Run Pre-Launch Audience Building","desc":"Build an email list and social following ahead of launch to drive day-one momentum.","cats":"Marketing","due":"2026-08-28","recurring":false,"recurLabel":"","deps":"Build Kickstarter Campaign Content Plan","milestone":false},
+{"id":"t22","name":"Launch Touch Pass Kickstarter Campaign","desc":"Go live with the Kickstarter campaign — the culmination of summer prototyping, content, and validation work.","cats":"Marketing, Project Planning, Manufacturing, Logistics","due":"2026-08-31","recurring":false,"recurLabel":"","deps":"Kickstarter Readiness Review (Go/No-Go); Build Kickstarter Campaign Page (Draft); Run Pre-Launch Audience Building","milestone":true}
+]},
+{"key":"lp","name":"Logistics — Shipping/Packaging","tasks":[
+{"id":"t23","name":"Shipping/Packaging Options/Ideas","desc":"Explore packaging options for both Design 1 and Design 2. Estimate shipping costs for a complete Touch Pass set (including footballs and pump) based on projected weights and package dimensions.","cats":"Logistics — Shipping/Packaging","due":"2026-07-01","recurring":false,"recurLabel":"","deps":"None","milestone":false},
+{"id":"t24","name":"Finalize Packaging Spec for Design 1 & Design 2","desc":"Lock final packaging dimensions, materials, and costs for both designs now that Design 1's collapsed dimensions are confirmed.","cats":"Logistics — Shipping/Packaging, Design","due":"2026-08-14","recurring":false,"recurLabel":"","deps":"Shipping/Packaging Options/Ideas; Finalize Design 1 Collapsed Dimensions & Weight","milestone":false},
+{"id":"t25","name":"Finalize Shipping Cost Estimates","desc":"Update shipping estimates using final packaging dimensions and weights — including average estimates for the continental U.S. and select non-continental destinations such as Hawaii — to support Kickstarter reward-tier and fulfillment planning.","cats":"Logistics — Shipping/Packaging, Design","due":"2026-08-14","recurring":false,"recurLabel":"","deps":"Shipping/Packaging Options/Ideas; Finalize Packaging Spec for Design 1 & Design 2","milestone":false}
+]},
+{"key":"lc","name":"Logistics — Storage / Carry","tasks":[
+{"id":"t26","name":"Storage Bag Options/Ideas","desc":"Research drawstring bags or similar storage options that could accommodate the net design, footballs, and pump. Gather pricing information and any relevant sizing considerations.","cats":"Logistics — Storage/Carry","due":"2026-07-01","recurring":false,"recurLabel":"","deps":"None","milestone":false},
+{"id":"t27","name":"Finalize Storage/Carry Bag Selection","desc":"Confirm the final bag choice and pricing now that Design 1's collapsed dimensions are locked in.","cats":"Logistics — Storage/Carry, Design","due":"2026-08-14","recurring":false,"recurLabel":"","deps":"Storage Bag Options/Ideas; Finalize Design 1 Collapsed Dimensions & Weight","milestone":false}
+]}
+]}/*DATA_END*/;
+
+const STORAGE_KEY="touchPassRoadmapData_v1";
+
+// Migrate a task's old free-text "cats" string (e.g. "Mfg — Immediate, Materials")
+// into the tag-based model: primaryCat (the section it lives in) + secondaryCats
+// (an array of category keys). Generic umbrella labels that have no exact match
+// in the fixed category vocabulary (old bare "Manufacturing"/"Logistics" tags)
+// are dropped, since every task now already carries a specific primary category.
+// Idempotent: a task that already has primaryCat is left untouched.
+function migrateTask(t, sectionKey){
+  if(t.primaryCat) return;
+  t.primaryCat=sectionKey;
+  const parts=(t.cats||"").split(",").map(s=>s.trim()).filter(Boolean);
+  const secSet=new Set();
+  parts.forEach(p=>{
+    const k=LABEL_TO_KEY[p];
+    if(k && k!==sectionKey) secSet.add(k);
+  });
+  t.secondaryCats=Array.from(secSet);
+  delete t.cats;
+}
+
+// Pull any legacy task that was flagged milestone:true out of its section and
+// into the dedicated top-level milestones array. Safe to run repeatedly: skips
+// ids already present in data.milestones.
+function migrateMilestones(data){
+  if(!Array.isArray(data.milestones)) data.milestones=[];
+  const existingIds=new Set(data.milestones.map(m=>m.id));
+  data.sections.forEach(sec=>{
+    const keep=[];
+    sec.tasks.forEach(t=>{
+      if(t.milestone){
+        if(!existingIds.has(t.id)){
+          data.milestones.push({id:t.id, name:t.name, desc:t.desc||"", due:t.due||"", deps:t.deps||"None"});
+          existingIds.add(t.id);
+        }
+      }else{
+        keep.push(t);
+      }
+    });
+    sec.tasks=keep;
+  });
+}
+
+function migrateData(data){
+  data.sections.forEach(sec=>sec.tasks.forEach(t=>{
+    migrateTask(t, sec.key);
+    if(t.start===undefined) t.start="";
+  }));
+  migrateMilestones(data);
+  return data;
+}
+
+function loadData(){
+  let data;
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    data = raw ? JSON.parse(raw) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }catch(e){
+    data = JSON.parse(JSON.stringify(DEFAULT_DATA));
+  }
+  return migrateData(data);
+}
+function saveData(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(tasksData)); }catch(e){}
+}
+function uid(){
+  return "t_"+Date.now().toString(36)+"_"+Math.random().toString(36).slice(2,8);
+}
+
+function isViewOnly(){
+  return document.documentElement.classList.contains("view-only");
+}
+
+let tasksData=loadData();
+
+function renderAll(){
+  renderGantt();
+  renderMilestoneStars();
+  applyGanttRowHeights();
+  renderTables();
+  renderMilestoneTable();
+  saveData();
+  updateSavedStamp();
+}
+
+// All task chips/stars render at this same fixed height, no matter how many
+// lanes a row needs. Rows that need multiple lanes grow taller (via
+// applyGanttRowHeights) instead of squeezing their bars thinner.
+const CHIP_HEIGHT=22;
+const LANE_GAP=4;
+const ROW_MARGIN=7;
+const MIN_ROW_HEIGHT=40;
+let rowLaneCounts={};
+
+function laneBlockMetrics(maxLanes){
+  const lanesBlockHeight=maxLanes*CHIP_HEIGHT + Math.max(0,maxLanes-1)*LANE_GAP;
+  const rowH=Math.max(MIN_ROW_HEIGHT, lanesBlockHeight + ROW_MARGIN*2);
+  const topOffset=(rowH-lanesBlockHeight)/2;
+  return {rowH:rowH, topOffset:topOffset};
+}
+
+function applyGanttRowHeights(){
+  const heights=[];
+  for(let r=1;r<=13;r++){
+    if(r===1) heights.push("24px");
+    else if(r===2) heights.push("22px");
+    else if(r===4||r===10) heights.push("20px");
+    else heights.push(laneBlockMetrics(rowLaneCounts[r]||1).rowH+"px");
+  }
+  const gantt=document.getElementById("ganttGrid");
+  if(gantt) gantt.style.gridTemplateRows=heights.join(" ");
+}
+
+function renderGantt(){
+  document.querySelectorAll('#ganttGrid [data-dyn="1"]').forEach(el=>el.remove());
+  const gantt=document.getElementById("ganttGrid");
+  SECTION_META.forEach(meta=>{
+    const sec=tasksData.sections.find(s=>s.key===meta.key);
+    if(!sec) return;
+    const ordered=sec.tasks.filter(t=>!t.recurring && t.due).slice().sort((a,b)=>a.due<b.due?-1:(a.due>b.due?1:0));
+
+    // Compute each chip's precise (sub-week) timeline span. If a task has an
+    // explicit start date, use it as the left edge. Otherwise chain from the
+    // previous task's due date in this row (or the project start for the
+    // first task).
+    let cursor=PROJECT_START;
+    const chips=ordered.map(t=>{
+      const leftPos=t.start ? weekPos(t.start) : weekPos(cursor);
+      const rightPos=Math.max(weekPos(t.due), leftPos);
+      cursor=t.due;
+      return {task:t, leftPos:leftPos, rightPos:rightPos};
+    });
+
+    // Greedy lane-packing so chips that land on overlapping date ranges
+    // (e.g. two tasks sharing a due date) stack into separate lanes instead
+    // of rendering on top of one another. Uses each chip's rendered
+    // (minimum-width-padded) span so the lane decision matches what's
+    // actually drawn — exactly-touching chips (one starts the instant the
+    // other ends) share a lane; only genuine overlaps get bumped.
+    const MIN_SPAN=(MIN_CHIP_WIDTH_PCT/100)*11;
+    const laneNextFree=[];
+    chips.forEach(c=>{
+      const effRight=Math.max(c.rightPos, c.leftPos+MIN_SPAN);
+      let lane=0;
+      while(lane<laneNextFree.length && laneNextFree[lane]>c.leftPos) lane++;
+      c.lane=lane;
+      laneNextFree[lane]=effRight;
+    });
+    const maxLanes=Math.max(1, laneNextFree.length);
+    rowLaneCounts[meta.row]=maxLanes;
+    const metrics=laneBlockMetrics(maxLanes);
+
+    // One plain (non-absolutely-positioned) grid item per row, sized to the
+    // row's full track via normal grid placement. This gives every chip an
+    // unambiguous, simple containing block (this track's own box) instead of
+    // relying on each chip individually being placed in a CSS grid area,
+    // which is what caused chips to mis-render outside their row.
+    const track=document.createElement("div");
+    track.setAttribute("data-dyn","1");
+    track.className="gantt-row-track";
+    track.style.gridRow=meta.row;
+    track.style.gridColumn="2/13";
+    gantt.appendChild(track);
+
+    chips.forEach(c=>{
+      const t=c.task;
+      const leftPct=(c.leftPos/11)*100;
+      const widthPct=Math.max(MIN_CHIP_WIDTH_PCT, ((c.rightPos-c.leftPos)/11)*100);
+
+      const chip=document.createElement("div");
+      chip.className="chip";
+      chip.style.position="absolute";
+      chip.style.left=leftPct+"%";
+      chip.style.width=widthPct+"%";
+      chip.style.top=(metrics.topOffset+c.lane*(CHIP_HEIGHT+LANE_GAP))+"px";
+      chip.style.height=CHIP_HEIGHT+"px";
+      chip.style.background="var("+meta.color+")";
+      const label=document.createElement("span");
+      label.className="chip-text";
+      label.textContent=t.name;
+      chip.appendChild(label);
+      chip.title=t.name+" — due "+fmtDate(t.due)+" (click to jump to details)";
+      chip.addEventListener("click", function(){ scrollToTask(t.id); });
+      track.appendChild(chip);
+    });
+  });
+}
+
+function scrollToTask(taskId){
+  const row=document.getElementById("task-row-"+taskId);
+  if(!row) return;
+  row.scrollIntoView({behavior:"smooth", block:"center"});
+  row.classList.add("flash-highlight");
+  setTimeout(function(){ row.classList.remove("flash-highlight"); }, 1600);
+}
+
+function scrollToMilestone(milestoneId){
+  const row=document.getElementById("milestone-row-"+milestoneId);
+  if(!row) return;
+  row.scrollIntoView({behavior:"smooth", block:"center"});
+  row.classList.add("flash-highlight");
+  setTimeout(function(){ row.classList.remove("flash-highlight"); }, 1600);
+}
+
+function renderMilestoneStars(){
+  document.querySelectorAll('#ganttGrid [data-milestone-dyn="1"]').forEach(el=>el.remove());
+  const gantt=document.getElementById("ganttGrid");
+  const ms=(tasksData.milestones||[]).filter(m=>m.due);
+
+  // Stars mark a single exact day, so each gets a small fixed-width box
+  // (MIN_CHIP_WIDTH_PCT wide) centered precisely on its due date.
+  const chips=ms.map(m=>{
+    const pos=weekPos(m.due);
+    return {m:m, leftPos:pos-(MIN_CHIP_WIDTH_PCT/100*11)/2, rightPos:pos+(MIN_CHIP_WIDTH_PCT/100*11)/2};
+  }).sort((a,b)=>a.leftPos-b.leftPos);
+
+  const laneNextFree=[];
+  chips.forEach(c=>{
+    let lane=0;
+    while(lane<laneNextFree.length && laneNextFree[lane]>c.leftPos) lane++;
+    c.lane=lane;
+    laneNextFree[lane]=c.rightPos;
+  });
+  const maxLanes=Math.max(1, laneNextFree.length);
+  rowLaneCounts[13]=maxLanes;
+  const metrics=laneBlockMetrics(maxLanes);
+
+  const track=document.createElement("div");
+  track.setAttribute("data-milestone-dyn","1");
+  track.className="gantt-row-track";
+  track.style.gridRow=13;
+  track.style.gridColumn="2/13";
+  gantt.appendChild(track);
+
+  chips.forEach(c=>{
+    const m=c.m;
+    const leftPct=(c.leftPos/11)*100;
+    const widthPct=((c.rightPos-c.leftPos)/11)*100;
+
+    const star=document.createElement("div");
+    star.className="milestone-star";
+    star.style.left=leftPct+"%";
+    star.style.width=widthPct+"%";
+    star.style.top=(metrics.topOffset+c.lane*(CHIP_HEIGHT+LANE_GAP))+"px";
+    star.style.height=CHIP_HEIGHT+"px";
+    star.textContent="★";
+    star.title=m.name+" — due "+fmtDate(m.due)+" (click to jump to Key Milestones)";
+    star.addEventListener("click", function(){ scrollToMilestone(m.id); });
+    track.appendChild(star);
+  });
+}
+
+function renderTables(){
+  tasksData.sections.forEach(sec=>{
+    const tbody=document.getElementById("tbody-"+sec.key);
+    if(!tbody) return;
+    tbody.innerHTML="";
+    sec.tasks.forEach(t=>{
+      const tr=document.createElement("tr");
+      tr.id="task-row-"+t.id;
+
+      const tdName=document.createElement("td");
+      tdName.className="task-name";
+      tdName.textContent=t.name;
+      tr.appendChild(tdName);
+
+      const tdDesc=document.createElement("td");
+      tdDesc.textContent=t.desc;
+      tr.appendChild(tdDesc);
+
+      const tdCats=document.createElement("td");
+      tdCats.className="cats";
+      const catLabels=[CAT_LABELS[t.primaryCat]].concat((t.secondaryCats||[]).map(k=>CAT_LABELS[k]));
+      tdCats.textContent=catLabels.filter(Boolean).join(", ");
+      tr.appendChild(tdCats);
+
+      const tdDue=document.createElement("td");
+      tdDue.className="due";
+      tdDue.textContent=t.recurring?t.recurLabel:fmtDate(t.due);
+      tr.appendChild(tdDue);
+
+      const tdDeps=document.createElement("td");
+      tdDeps.className="deps";
+      tdDeps.textContent=t.deps||"None";
+      tr.appendChild(tdDeps);
+
+      const tdAct=document.createElement("td");
+      tdAct.className="actions";
+      const editBtn=document.createElement("button");
+      editBtn.type="button";
+      editBtn.className="icon-btn";
+      editBtn.title="Edit task";
+      editBtn.textContent="✏️";
+      editBtn.onclick=()=>openModal(sec.key,t.id);
+      const delBtn=document.createElement("button");
+      delBtn.type="button";
+      delBtn.className="icon-btn";
+      delBtn.title="Delete task";
+      delBtn.textContent="🗑";
+      delBtn.onclick=()=>deleteTask(sec.key,t.id);
+      tdAct.appendChild(editBtn);
+      tdAct.appendChild(delBtn);
+      tr.appendChild(tdAct);
+
+      tbody.appendChild(tr);
+    });
+  });
+}
+
+function renderMilestoneTable(){
+  const tbody=document.getElementById("tbody-milestones");
+  if(!tbody) return;
+  tbody.innerHTML="";
+  const ordered=(tasksData.milestones||[]).slice().sort((a,b)=>a.due<b.due?-1:(a.due>b.due?1:0));
+  ordered.forEach(m=>{
+    const tr=document.createElement("tr");
+    tr.id="milestone-row-"+m.id;
+
+    const tdName=document.createElement("td");
+    tdName.className="task-name";
+    tdName.textContent=m.name;
+    tr.appendChild(tdName);
+
+    const tdDesc=document.createElement("td");
+    tdDesc.textContent=m.desc;
+    tr.appendChild(tdDesc);
+
+    const tdDue=document.createElement("td");
+    tdDue.className="due";
+    tdDue.textContent=fmtDate(m.due);
+    tr.appendChild(tdDue);
+
+    const tdDeps=document.createElement("td");
+    tdDeps.className="deps";
+    tdDeps.textContent=m.deps||"None";
+    tr.appendChild(tdDeps);
+
+    const tdAct=document.createElement("td");
+    tdAct.className="actions";
+    const editBtn=document.createElement("button");
+    editBtn.type="button";
+    editBtn.className="icon-btn";
+    editBtn.title="Edit milestone";
+    editBtn.textContent="✏️";
+    editBtn.onclick=()=>openMilestoneModal(m.id);
+    const delBtn=document.createElement("button");
+    delBtn.type="button";
+    delBtn.className="icon-btn";
+    delBtn.title="Delete milestone";
+    delBtn.textContent="🗑";
+    delBtn.onclick=()=>deleteMilestone(m.id);
+    tdAct.appendChild(editBtn);
+    tdAct.appendChild(delBtn);
+    tr.appendChild(tdAct);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function deleteTask(sectionKey,taskId){
+  if(isViewOnly()) return;
+  const sec=tasksData.sections.find(s=>s.key===sectionKey);
+  if(!sec) return;
+  const t=sec.tasks.find(x=>x.id===taskId);
+  if(!t) return;
+  if(!confirm('Delete "'+t.name+'"?')) return;
+  sec.tasks=sec.tasks.filter(x=>x.id!==taskId);
+  renderAll();
+}
+
+let milestoneModalState={milestoneId:null};
+
+function openMilestoneModal(milestoneId){
+  if(isViewOnly()) return;
+  milestoneModalState={milestoneId:milestoneId||null};
+  const m= milestoneId ? (tasksData.milestones||[]).find(x=>x.id===milestoneId) : null;
+  document.getElementById("milestoneModalTitle").textContent = m ? "Edit Milestone" : "Add Milestone";
+  document.getElementById("fm-name").value = m ? m.name : "";
+  document.getElementById("fm-desc").value = m ? m.desc : "";
+  document.getElementById("fm-due").value = m ? m.due : "";
+  document.getElementById("fm-deps").value = m ? (m.deps||"") : "None";
+  document.getElementById("milestoneModalOverlay").classList.add("open");
+  document.getElementById("fm-name").focus();
+}
+
+function closeMilestoneModal(){
+  document.getElementById("milestoneModalOverlay").classList.remove("open");
+}
+
+function saveMilestoneModal(e){
+  e.preventDefault();
+  const name=document.getElementById("fm-name").value.trim();
+  if(!name){ alert("Milestone name is required."); return; }
+  const due=document.getElementById("fm-due").value;
+  if(!due){ alert("Due date is required."); return; }
+
+  const fields={
+    name:name,
+    desc:document.getElementById("fm-desc").value.trim(),
+    due:due,
+    deps:document.getElementById("fm-deps").value.trim()||"None"
+  };
+
+  if(!Array.isArray(tasksData.milestones)) tasksData.milestones=[];
+  if(milestoneModalState.milestoneId){
+    const m=tasksData.milestones.find(x=>x.id===milestoneModalState.milestoneId);
+    if(m) Object.assign(m,fields);
+  }else{
+    fields.id=uid();
+    tasksData.milestones.push(fields);
+  }
+  closeMilestoneModal();
+  renderAll();
+}
+
+function deleteMilestone(milestoneId){
+  if(isViewOnly()) return;
+  const m=(tasksData.milestones||[]).find(x=>x.id===milestoneId);
+  if(!m) return;
+  if(!confirm('Delete milestone "'+m.name+'"?')) return;
+  tasksData.milestones=tasksData.milestones.filter(x=>x.id!==milestoneId);
+  renderAll();
+}
+
+let modalState={sectionKey:null, taskId:null};
+let tagState={primary:null, secondary:new Set()};
+
+function renderTagPickers(){
+  const pPicker=document.getElementById("f-primaryCat");
+  const sPicker=document.getElementById("f-secondaryCats");
+  pPicker.innerHTML="";
+  sPicker.innerHTML="";
+  SECTION_META.forEach(meta=>{
+    const pPill=document.createElement("button");
+    pPill.type="button";
+    pPill.className="tag-pill"+(tagState.primary===meta.key?" selected":"");
+    pPill.innerHTML='<span class="pill-dot" style="background:var('+meta.color+')"></span>'+meta.short;
+    pPill.onclick=function(){ tagState.primary=meta.key; renderTagPickers(); };
+    pPicker.appendChild(pPill);
+
+    const sPill=document.createElement("button");
+    sPill.type="button";
+    sPill.className="tag-pill"+(tagState.secondary.has(meta.key)?" selected":"");
+    sPill.innerHTML='<span class="pill-dot" style="background:var('+meta.color+')"></span>'+meta.short;
+    sPill.onclick=function(){
+      if(tagState.secondary.has(meta.key)) tagState.secondary.delete(meta.key);
+      else tagState.secondary.add(meta.key);
+      renderTagPickers();
+    };
+    sPicker.appendChild(sPill);
+  });
+}
+
+function openModal(sectionKey, taskId){
+  if(isViewOnly()) return;
+  modalState={sectionKey:sectionKey, taskId:taskId||null};
+  const sec=tasksData.sections.find(s=>s.key===sectionKey);
+  if(!sec) return;
+  const t= taskId ? sec.tasks.find(x=>x.id===taskId) : null;
+  document.getElementById("modalTitle").textContent = t ? "Edit Task" : "Add Task — "+sec.name;
+  document.getElementById("f-name").value = t ? t.name : "";
+  document.getElementById("f-desc").value = t ? t.desc : "";
+  tagState.primary = t ? t.primaryCat : sectionKey;
+  tagState.secondary = new Set(t ? (t.secondaryCats||[]) : []);
+  renderTagPickers();
+  document.getElementById("f-recurring").checked = t ? !!t.recurring : false;
+  document.getElementById("f-start").value = t && t.start ? t.start : "";
+  document.getElementById("f-due").value = t && t.due ? t.due : "";
+  document.getElementById("f-recurLabel").value = t && t.recurLabel ? t.recurLabel : "";
+  document.getElementById("f-deps").value = t ? (t.deps||"") : "None";
+  toggleRecurringFields();
+  document.getElementById("modalOverlay").classList.add("open");
+  document.getElementById("f-name").focus();
+}
+
+function closeModal(){
+  document.getElementById("modalOverlay").classList.remove("open");
+}
+
+function toggleRecurringFields(){
+  const rec=document.getElementById("f-recurring").checked;
+  document.getElementById("startField").style.display = rec ? "none" : "block";
+  document.getElementById("dueField").style.display = rec ? "none" : "block";
+  document.getElementById("recurLabelField").style.display = rec ? "block" : "none";
+}
+
+function saveModal(e){
+  e.preventDefault();
+  const name=document.getElementById("f-name").value.trim();
+  if(!name){ alert("Task name is required."); return; }
+  if(!tagState.primary){ alert("Please choose a primary category."); return; }
+  const recurring=document.getElementById("f-recurring").checked;
+  const start=document.getElementById("f-start").value;
+  const due=document.getElementById("f-due").value;
+  if(!recurring && !due){ alert("Due date is required (or check Ongoing/recurring)."); return; }
+  if(!recurring && start && due && start>due){ alert("Start date must be on or before the due date."); return; }
+  const recurLabel=document.getElementById("f-recurLabel").value.trim();
+  if(recurring && !recurLabel){ alert("Please give the recurrence a label (e.g. Ongoing — weekly, Jun 22–Aug 31)."); return; }
+
+  const newSec=tasksData.sections.find(s=>s.key===tagState.primary);
+  if(!newSec){ alert("Invalid primary category."); return; }
+  const secondaryCats=Array.from(tagState.secondary).filter(k=>k!==tagState.primary);
+
+  const fields={
+    name:name,
+    desc:document.getElementById("f-desc").value.trim(),
+    primaryCat:tagState.primary,
+    secondaryCats:secondaryCats,
+    recurring:recurring,
+    start: recurring ? "" : start,
+    due: recurring ? "" : due,
+    recurLabel: recurring ? recurLabel : "",
+    deps:document.getElementById("f-deps").value.trim()||"None"
+  };
+
+  if(modalState.taskId){
+    const oldSec=tasksData.sections.find(s=>s.key===modalState.sectionKey);
+    const existing=oldSec ? oldSec.tasks.find(x=>x.id===modalState.taskId) : null;
+    if(existing){
+      Object.assign(existing, fields);
+      if(oldSec.key!==newSec.key){
+        oldSec.tasks=oldSec.tasks.filter(x=>x.id!==modalState.taskId);
+        newSec.tasks.push(existing);
+      }
+    }
+  }else{
+    fields.id=uid();
+    newSec.tasks.push(fields);
+  }
+  closeModal();
+  renderAll();
+}
+
+function exportHtml(){
+  if(isViewOnly()) return;
+  closeModal();
+  closeMilestoneModal();
+  let html=document.documentElement.outerHTML;
+  const newData=JSON.stringify(tasksData);
+  html=html.replace(/\/\*DATA_START\*\/[\s\S]*?\/\*DATA_END\*\//, "/*DATA_START*/"+newData+"/*DATA_END*/");
+  const blob=new Blob(["<!DOCTYPE html>\n"+html], {type:"text/html"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="Touch Pass - Summer 2026 Roadmap.html";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function resetDefaults(){
+  if(isViewOnly()) return;
+  if(!confirm("Reset to the original roadmap? This will discard all edits saved in this browser.")) return;
+  tasksData=migrateData(JSON.parse(JSON.stringify(DEFAULT_DATA)));
+  renderAll();
+}
+
+function updateSavedStamp(){
+  const el=document.getElementById("savedStamp");
+  if(el) el.textContent="Saved to this browser · "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+}
+
+document.addEventListener("keydown", function(e){
+  if(e.key==="Escape"){ closeModal(); closeMilestoneModal(); }
+});
+
+document.addEventListener("DOMContentLoaded", function(){
+  renderAll();
+});
+</script>
+
+</body>
+</html>
